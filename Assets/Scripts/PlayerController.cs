@@ -8,6 +8,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask platFormLayer;
 
     private Rigidbody2D rb;
+    private BoxCollider2D bc;
+    private Animator animator;
 
     private float playerSpeed = 800f;
     private float horizontal;
@@ -17,9 +19,9 @@ public class PlayerController : MonoBehaviour
     private float jumpHeight = 1000.0f;
     private bool jump = false;
 
-    private float wallJumpHeight = 1200.0f;
-    private float wallJumpForce = 400.0f;
-    private float maxJumpHeight = 20.0f;
+    private float wallJumpHeight = 1000.0f;
+    private float wallJumpForce = 600.0f;
+    private float maxJumpHeight = 25.0f;
     private bool jumpWall = false;
     private int wallSide = 0;
     private bool canJump = false;
@@ -33,6 +35,8 @@ public class PlayerController : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         rb = GetComponent<Rigidbody2D>();
+        bc = GetComponent<BoxCollider2D>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -72,15 +76,18 @@ public class PlayerController : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+        Animate();
     }
 
     private void OnDrawGizmosSelected()
     {
+        if (bc == null) return;
+
         Gizmos.color = Color.green;
-        Gizmos.DrawCube(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y - gameObject.transform.localScale.y / 2 - 0.1f), new Vector2(gameObject.transform.localScale.x - 0.05f, 0.1f));
+        Gizmos.DrawCube(new Vector2(bc.transform.position.x, bc.transform.position.y - bc.size.y / 2 - 0.1f), new Vector2(bc.size.x - 0.05f, 0.1f));
         Gizmos.color = Color.blue;
-        Gizmos.DrawCube(new Vector2(gameObject.transform.position.x - gameObject.transform.localScale.x / 2 - 0.05f, gameObject.transform.position.y), new Vector2(0.05f, gameObject.transform.localScale.y - 0.2f));
-        Gizmos.DrawCube(new Vector2(gameObject.transform.position.x + gameObject.transform.localScale.x / 2 + 0.05f, gameObject.transform.position.y), new Vector2(0.05f, gameObject.transform.localScale.y - 0.2f));
+        Gizmos.DrawCube(new Vector2(bc.transform.position.x - bc.size.x / 2 - 0.1f, bc.transform.position.y), new Vector2(0.1f, bc.size.y - 0.2f));
+        Gizmos.DrawCube(new Vector2(bc.transform.position.x + bc.size.x / 2 + 0.1f, bc.transform.position.y), new Vector2(0.1f, bc.size.y - 0.2f));
     }
 
     private void MovePlayer()
@@ -90,6 +97,7 @@ public class PlayerController : MonoBehaviour
             float horizontalVelocity = Mathf.Approximately(endurenceOnWall, 0f) ? horizontal * playerSpeed * Time.fixedDeltaTime : horizontal * playerSpeed * Time.fixedDeltaTime * endurenceOnWall;
 
             Vector2 newVelocity = new Vector2(horizontalVelocity, rb.velocity.y);
+
             rb.velocity = Vector2.SmoothDamp(rb.velocity, newVelocity, ref velocity, smouthTime);
         }
 
@@ -104,7 +112,6 @@ public class PlayerController : MonoBehaviour
             float horizontalJumpForce = wallSide * wallJumpForce;
 
             rb.AddForce(new Vector2(horizontalJumpForce, wallJumpHeight), ForceMode2D.Impulse);
-
             rb.velocity = Vector2.ClampMagnitude(rb.velocity, maxJumpHeight);
 
             canJump = false;
@@ -115,21 +122,22 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public bool IsGrounded()
+    private bool IsGrounded()
     {
-        return Physics2D.OverlapBox(new Vector2(gameObject.transform.position.x, gameObject.transform.position.y - gameObject.transform.localScale.y / 2 - 0.1f), new Vector2(gameObject.transform.localScale.x - 0.05f, 0.1f), 0f, platFormLayer);
+        return Physics2D.OverlapBox(new Vector2(bc.transform.position.x, bc.transform.position.y - bc.size.y / 2 - 0.1f), new Vector2(bc.size.x - 0.05f, 0.1f), 0f, platFormLayer);
     }
 
-    public bool IsOnWall()
+    private bool IsOnWall()
     {
-        bool colliderLeft = Physics2D.OverlapBox(new Vector2(gameObject.transform.position.x - gameObject.transform.localScale.x / 2 - 0.05f, gameObject.transform.position.y), new Vector2(0.05f, gameObject.transform.localScale.y - 0.2f), 0f, platFormLayer);
-        bool colliderRight = Physics2D.OverlapBox(new Vector2(gameObject.transform.position.x + gameObject.transform.localScale.x / 2 + 0.05f, gameObject.transform.position.y), new Vector2(0.05f, gameObject.transform.localScale.y - 0.2f), 0f, platFormLayer);
+        bool colliderLeft = Physics2D.OverlapBox(new Vector2(bc.transform.position.x - bc.size.x / 2 - 0.1f, bc.transform.position.y), new Vector2(0.1f, bc.size.y - 0.2f), 0f, platFormLayer);
+        bool colliderRight = Physics2D.OverlapBox(new Vector2(bc.transform.position.x + bc.size.x / 2 + 0.1f, bc.transform.position.y), new Vector2(0.1f, bc.size.y - 0.2f), 0f, platFormLayer);
 
         if (colliderLeft) wallSide = 1;
         if (colliderRight) wallSide = -1;
 
         if (colliderLeft || colliderRight) 
         {
+            rb.velocity = new Vector2(0f, rb.velocity.y);
             if (timeElapsedOnWall < stayOnWallMaxTime)
             {
                 endurenceOnWall = Mathf.Lerp(stayOnWallMaxTime, 0.1f, timeElapsedOnWall / 1);
@@ -144,9 +152,18 @@ public class PlayerController : MonoBehaviour
         return false;
     }
 
-    public void SetCanJumpToFalse()
+    private void SetCanJumpToFalse()
     {
         canJump = false;
         wallSide = 0;
+    }
+
+    private void Animate()
+    {
+        animator.SetBool("IsMoving", rb.velocity.x > 0.01f || rb.velocity.x < -0.01f);
+        animator.SetFloat("Direction", horizontal);
+        animator.SetBool("IsGrounded", IsGrounded());
+        animator.SetBool("OnWall", IsOnWall());
+        animator.SetFloat("WallSide", wallSide);
     }
 }
