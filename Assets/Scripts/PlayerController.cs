@@ -11,17 +11,18 @@ public class PlayerController : MonoBehaviour
     private BoxCollider2D bc;
     private Animator animator;
 
-    private float playerSpeed = 800f;
+    private int playerWalkSpeed = 500;
+    private int playerSprintSpeed = 800;
     private float horizontal;
     private Vector2 velocity = Vector2.zero;
-    private float smouthTime = .05f;
+    private float smouthTime = .1f;
 
-    private float jumpHeight = 1000.0f;
+    private int jumpHeight = 1000;
     private bool jump = false;
 
-    private float wallJumpHeight = 1000.0f;
-    private float wallJumpForce = 600.0f;
-    private float maxJumpHeight = 25.0f;
+    private int wallJumpHeight = 800;
+    private int wallJumpForce = 400;
+    private int maxJumpHeight = 20;
     private bool jumpWall = false;
     private int wallSide = 0;
     private bool canJump = false;
@@ -42,41 +43,50 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void Update()
     {
-        horizontal = Input.GetAxis("Horizontal");
-        if (Input.GetButtonDown("Jump"))
-        {
-            if (IsGrounded()) jump = true;
-        }
+        horizontal = Input.GetAxisRaw("Horizontal");
 
-        if (!IsGrounded())
+        if (IsGrounded())
         {
-            if (IsOnWall())
-            {
-                canJump = true;
-            } 
-            else
-            {
-                Invoke(nameof(SetCanJumpToFalse), timeUntilCannotJump);
-            }
-        } 
-        else
-        {
+            animator.SetBool("IsGrounded", true);
+            animator.SetBool("OnWall", false);
             canJump = false;
             wallSide = 0;
             endurenceOnWall = 0f;
             timeElapsedOnWall = 0f;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                jump = true;
+            }
+        } 
+        else
+        {
+            animator.SetBool("IsGrounded", false);
+
+            if (IsOnWall())
+            {
+                animator.SetBool("OnWall", true);
+                canJump = true;
+            }
+            else
+            {
+                Invoke(nameof(SetCanJumpToFalse), timeUntilCannotJump);
+            }
         }
 
         if (Input.GetButtonDown("Jump") && canJump)
         {
             jumpWall = true;
         }
+
+        animator.SetBool("IsMoving", rb.velocity.x > 0.01f || rb.velocity.x < -0.01f);
+        animator.SetFloat("Direction", Mathf.Clamp(rb.velocity.x, -1f, 1f));
+        animator.SetFloat("WallSide", wallSide);
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
-        Animate();
     }
 
     private void OnDrawGizmosSelected()
@@ -94,6 +104,8 @@ public class PlayerController : MonoBehaviour
     {
         if (!Mathf.Approximately(horizontal, 0f) && (wallSide == 0 || wallSide == 1 && horizontal > 0f || wallSide == -1 && horizontal < 0f || wallSide != 0 && !Mathf.Approximately(endurenceOnWall, 0f)))
         {
+            int playerSpeed = Input.GetButton("Sprint") ? playerSprintSpeed : playerWalkSpeed;
+            Debug.Log(playerSpeed);
             float horizontalVelocity = Mathf.Approximately(endurenceOnWall, 0f) ? horizontal * playerSpeed * Time.fixedDeltaTime : horizontal * playerSpeed * Time.fixedDeltaTime * endurenceOnWall;
 
             Vector2 newVelocity = new Vector2(horizontalVelocity, rb.velocity.y);
@@ -154,16 +166,8 @@ public class PlayerController : MonoBehaviour
 
     private void SetCanJumpToFalse()
     {
+        animator.SetBool("OnWall", false);
         canJump = false;
         wallSide = 0;
-    }
-
-    private void Animate()
-    {
-        animator.SetBool("IsMoving", rb.velocity.x > 0.01f || rb.velocity.x < -0.01f);
-        animator.SetFloat("Direction", horizontal);
-        animator.SetBool("IsGrounded", IsGrounded());
-        animator.SetBool("OnWall", IsOnWall());
-        animator.SetFloat("WallSide", wallSide);
     }
 }
