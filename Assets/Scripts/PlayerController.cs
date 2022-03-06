@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -105,7 +103,6 @@ public class PlayerController : MonoBehaviour
         if (!Mathf.Approximately(horizontal, 0f) && (wallSide == 0 || wallSide == 1 && horizontal > 0f || wallSide == -1 && horizontal < 0f || wallSide != 0 && !Mathf.Approximately(endurenceOnWall, 0f)))
         {
             int playerSpeed = Input.GetButton("Sprint") ? playerSprintSpeed : playerWalkSpeed;
-            Debug.Log(playerSpeed);
             float horizontalVelocity = Mathf.Approximately(endurenceOnWall, 0f) ? horizontal * playerSpeed * Time.fixedDeltaTime : horizontal * playerSpeed * Time.fixedDeltaTime * endurenceOnWall;
 
             Vector2 newVelocity = new Vector2(horizontalVelocity, rb.velocity.y);
