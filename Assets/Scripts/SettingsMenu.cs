@@ -9,7 +9,7 @@ public class SettingsMenu : MonoBehaviour
 {
     public AudioMixer am;
     public Dropdown resolutionDropdown;
-    public GameObject mainMenu;
+    public GameObject previousMenu;
 
     private Resolution[] resolutions;
     private FullScreenMode fsm;
@@ -88,7 +88,7 @@ public class SettingsMenu : MonoBehaviour
 
     public void ReturnToMainMenu()
     {
-        mainMenu.SetActive(true);
+        previousMenu.SetActive(true);
         gameObject.SetActive(false);
     }
 }
