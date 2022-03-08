@@ -225,6 +225,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PauseMenuWindow
       objectReference: {fileID: 0}
+    - target: {fileID: 2007678651179652108, guid: 858b382957b77f74787a10b0b41971f1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2007678651616934310, guid: 858b382957b77f74787a10b0b41971f1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
       value: 1
@@ -303,6 +307,10 @@ PrefabInstance:
     - target: {fileID: 4257203313565833792, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
       propertyPath: m_Name
       value: SettingsWindow
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313565833792, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4257203313565833793, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
       propertyPath: m_Pivot.x
@@ -392,6 +400,46 @@ PrefabInstance:
       propertyPath: previousMenu
       value: 
       objectReference: {fileID: 301199728220187995}
+    - target: {fileID: 4257203313730466914, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313730466914, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313730466914, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313745486931, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313745486931, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313873342298, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203313873342298, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203314028196992, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203314028196992, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4257203314028196992, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 66c608f4940d6c44ebc30a12c2fe1a00, type: 3}
 --- !u!1 &2658875636972441621 stripped

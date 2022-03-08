@@ -4,6 +4,7 @@ public class PauseMenu : MonoBehaviour
 {
     public GameObject settingsWindow;
     public GameObject pauseWindow;
+    public GameObject videoPlayer;
 
     private bool pause = false;
 
@@ -24,6 +25,7 @@ public class PauseMenu : MonoBehaviour
 
     public void PauseGame()
     {
+        videoPlayer.SetActive(true);
         pauseWindow.SetActive(true);
         Time.timeScale = 0;
         pause = true;
@@ -31,6 +33,7 @@ public class PauseMenu : MonoBehaviour
 
     public void ResumeGame()
     {
+        videoPlayer.SetActive(false);
         pauseWindow.SetActive(false);
         Time.timeScale = 1;
         pause = false;
